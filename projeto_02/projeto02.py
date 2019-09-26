@@ -52,7 +52,7 @@ def show_cats_and_dogs(idx):
     plt.imshow(pair)
     plt.show()
     
-# dois exemplos de descritores. Você deve criar outros mais robustos.
+
 def image_to_feature_vector(image, size=(32, 32)):
     # resize the image to a fixed size, then flatten the image into
     # a list of raw pixel intensities
@@ -135,7 +135,7 @@ for i, image_file in enumerate(train_images):
     if i%250 == 0: print('Processed {} of {}'.format(i, count))
 
 # In[ ]:
-    descEdges[0].shape
+descEdges[0].shape
 # In[ ]:
 
 #Avalia o primeiro descritor: as imagens raw
