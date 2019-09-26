@@ -102,14 +102,24 @@ for i in train_images:
 
 # In[ ]:
 
-for idx in range(0,3):
+for idx in range(3,5):
     show_cats_and_dogs(idx)
 
 
 # In[ ]:
+#Função que determina os Thresholds lower e upper
+#do detector de Canny automaticamente
+def auto_canny(image):
+    sigma=0.33
+    mediana = np.median(image)
+    threshold_baixo = int(max(0, (1.0 - sigma) * mediana))
+    threshold_alto = int(min(255, (1.0 + sigma) * mediana))
+    bordas = cv2.Canny(image, threshold_baixo, threshold_alto)
+    return bordas
 
 rawImages = []
 descHist = []
+descEdges = []
 
 count = len(train_images)
 
@@ -117,13 +127,15 @@ for i, image_file in enumerate(train_images):
     image = read_image(image_file)
     pixels = image_to_feature_vector(image)
     histogram = extract_color_histogram(image)
-    
+    edges = image_to_feature_vector(auto_canny(image))
+
     rawImages.append(pixels)
     descHist.append(histogram)
-        
+    descEdges.append(edges)    
     if i%250 == 0: print('Processed {} of {}'.format(i, count))
 
-
+# In[ ]:
+    descEdges[0].shape
 # In[ ]:
 
 #Avalia o primeiro descritor: as imagens raw
@@ -173,6 +185,28 @@ for clf in classifiers:
     acc = clf.score(X_test, y_test)
     print("accuracy: {:.2f}%".format(acc * 100))   
 
+# In[ ]:
+
+#Avalia o terceiro descritor: Canny
+(X_train, X_test, y_train, y_test) = train_test_split(
+    descEdges, labels, test_size=0.25, random_state=42)
+
+classifiers = [
+    KNeighborsClassifier(17),    
+    DecisionTreeClassifier(),
+    GaussianNB()]
+
+for clf in classifiers:
+    clf.fit(X_train, y_train)
+    name = clf.__class__.__name__
+    
+    print("="*30)
+    print(name)
+    
+    print('****Results****')
+    train_predictions = clf.predict(X_test)
+    acc = clf.score(X_test, y_test)
+    print("accuracy: {:.2f}%".format(acc * 100)) 
 
 # In[ ]:
 
@@ -182,7 +216,7 @@ for clf in classifiers:
 #DESCRITORES MAIS ROBUSTOS, BEM COMO EXPLORAR MELHOR AS MÉTRICAS
 #DE AVALIAÇÃO (MATRIZ DE CONFUSÃO, ETC)
 
-trainAux = np.hstack((descHist, rawImages))
+trainAux = np.hstack((descHist, rawImages, descEdges))
 (X_train, X_test, y_train, y_test) = train_test_split(
     trainAux, labels, test_size=0.25, random_state=42)
 
@@ -203,3 +237,6 @@ for clf in classifiers:
     acc = clf.score(X_test, y_test)
     print("accuracy: {:.2f}%".format(acc * 100))   
 
+
+
+#%%
