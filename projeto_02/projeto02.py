@@ -210,13 +210,9 @@ for clf in classifiers:
 
 # In[ ]:
 
-#Avalia a combinação dos dois primeiros descritores!
+#Avalia a combinação dos descritores de Canny e Color Histogram
 
-#ATENÇÃO: ESTE É APENAS UM CÓDIGO EXEMPLO. VOCÊ DEVE DESENVOLVER
-#DESCRITORES MAIS ROBUSTOS, BEM COMO EXPLORAR MELHOR AS MÉTRICAS
-#DE AVALIAÇÃO (MATRIZ DE CONFUSÃO, ETC)
-
-trainAux = np.hstack((descHist, rawImages, descEdges))
+trainAux = np.hstack((descHist, descHist, descEdges))
 (X_train, X_test, y_train, y_test) = train_test_split(
     trainAux, labels, test_size=0.25, random_state=42)
 
