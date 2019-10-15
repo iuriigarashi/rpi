@@ -10,6 +10,7 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 get_ipython().magic('matplotlib inline')
+import pickle
 
 
 from sklearn import tree
@@ -106,6 +107,7 @@ for idx in range(3,5):
     show_cats_and_dogs(idx)
 
 
+
 # In[ ]:
 #Função que determina os Thresholds lower e upper
 #do detector de Canny automaticamente
@@ -123,16 +125,43 @@ descEdges = []
 
 count = len(train_images)
 
-for i, image_file in enumerate(train_images):
-    image = read_image(image_file)
-    pixels = image_to_feature_vector(image)
-    histogram = extract_color_histogram(image)
-    edges = image_to_feature_vector(auto_canny(image))
+# In[]
+# carrega os dados anteriores?
+def pickelObject(objeto, arquivo):
+    file = open(arquivo,'wb')
+    pickle.dump(objeto,file)
+    file.close()
+def despickel(arquivo):
+    file = open(arquivo,'rb')
+    objecto = pickle.load(file)
+    file.close()
+    return objecto
 
-    rawImages.append(pixels)
-    descHist.append(histogram)
-    descEdges.append(edges)    
-    if i%250 == 0: print('Processed {} of {}'.format(i, count))
+
+carregarDados = True
+if carregarDados:
+    #carrega dados
+    print("carregar dados em pickel")
+    rawImages = despickel('rawImagesPickel')
+    print(rawImages[0].shape)
+    descHist = despickel('descHistPickel')
+    print(descHist[0].shape)
+    descEdges = despickel('descEdgesPickel')
+    print(descEdges[0].shape)
+else:
+    for i, image_file in enumerate(train_images):
+        image = read_image(image_file)
+        pixels = image_to_feature_vector(image)
+        histogram = extract_color_histogram(image)
+        edges = image_to_feature_vector(auto_canny(image))
+
+        rawImages.append(pixels)
+        descHist.append(histogram)
+        descEdges.append(edges)    
+        if i%250 == 0: print('Processed {} of {}'.format(i, count))
+    pickelObject(rawImages,'rawImagesPickel')
+    pickelObject(descHist,'descHistPickel')
+    pickelObject(descEdges,'descEdgesPickel')
 
 # In[ ]:
 descEdges[0].shape
