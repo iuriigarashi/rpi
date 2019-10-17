@@ -9,7 +9,7 @@ import os, cv2, random
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-get_ipython().magic('matplotlib inline')
+#get_ipython().magic('matplotlib inline')
 import pickle
 
 
@@ -42,7 +42,7 @@ def prep_data(images):
     for i, image_file in enumerate(images):
         image = read_image(image_file)
         data[i] = image.T
-        if i%250 == 0: print('Processed {} of {}'.format(i, count))    
+        if i%250 == 0: print('Processed {} of {}'.format(i, count))
     return data
 
 def show_cats_and_dogs(idx):
@@ -52,17 +52,17 @@ def show_cats_and_dogs(idx):
     plt.figure(figsize=(10,5))
     plt.imshow(pair)
     plt.show()
-    
+
 
 def image_to_feature_vector(image, size=(32, 32)):
     # resize the image to a fixed size, then flatten the image into
     # a list of raw pixel intensities
     return cv2.resize(image, size).flatten()
 
-def extract_color_histogram(image, bins=(8, 8, 8)):     
+def extract_color_histogram(image, bins=(8, 8, 8)):
     # extract a 3D color histogram from the HSV color space using
     # the supplied number of `bins` per channel
-    #image = cv2.imread(image_file)        
+    #image = cv2.imread(image_file)
     hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     hist = cv2.calcHist([hsv], [0, 1, 2], None, bins,
         [0, 180, 0, 256, 0, 256])
@@ -122,6 +122,9 @@ def auto_canny(image):
 rawImages = []
 descHist = []
 descEdges = []
+descSobelX = []
+descSobelY = []
+descOrientation = []
 
 count = len(train_images)
 
@@ -138,7 +141,7 @@ def despickel(arquivo):
     return objecto
 
 
-carregarDados = True
+carregarDados = False
 if carregarDados:
     #carrega dados
     print("carregar dados em pickel")
@@ -150,21 +153,25 @@ if carregarDados:
     print(descEdges[0].shape)
 else:
     for i, image_file in enumerate(train_images):
-        image = read_image(image_file)
-        pixels = image_to_feature_vector(image)
-        histogram = extract_color_histogram(image)
-        edges = image_to_feature_vector(auto_canny(image))
+        image = read_image(image_file)  # Lê a imagem
+        pixels = image_to_feature_vector(image) # Põe a imagem num vetor de características
+        histogram = extract_color_histogram(image)  # Extrai o histograma da imagem
+        edges = image_to_feature_vector(auto_canny(image))  # Aplica o canny e põe num vetor de características
+        sobeldx = image_to_feature_vector(cv2.Sobel(image, cv2.CV_16S, 1, 0, ksize=3, scale=1, delta=0))
+        sobeldy = image_to_feature_vector(cv2.Sobel(image, cv2.CV_16S, 0, 1, ksize=3, scale=1, delta=0))
 
         rawImages.append(pixels)
         descHist.append(histogram)
-        descEdges.append(edges)    
+        descEdges.append(edges)
+        descSobelX.append(sobeldx)
+        descSobelY.append(sobeldy)
         if i%250 == 0: print('Processed {} of {}'.format(i, count))
     pickelObject(rawImages,'rawImagesPickel')
     pickelObject(descHist,'descHistPickel')
     pickelObject(descEdges,'descEdgesPickel')
 
 # In[ ]:
-descEdges[0].shape
+# descEdges[0].shape
 # In[ ]:
 
 #Avalia o primeiro descritor: as imagens raw
@@ -173,22 +180,69 @@ descEdges[0].shape
     rawImages, labels, test_size=0.25, random_state=42)
 
 classifiers = [
-    KNeighborsClassifier(17),    
+    KNeighborsClassifier(17),
     DecisionTreeClassifier(),
     GaussianNB()]
 
 for clf in classifiers:
     clf.fit(X_train, y_train)
     name = clf.__class__.__name__
-    
+
     print("="*30)
     print(name)
-    
+
     print('****Results****')
     train_predictions = clf.predict(X_test)
     acc = clf.score(X_test, y_test)
-    print("accuracy: {:.2f}%".format(acc * 100))    
+    print("accuracy: {:.2f}%".format(acc * 100))
 
+# In[ ]:
+
+#Avalia o quarto descritor = Sobel X
+print("sobel dx")
+(X_train, X_test, y_train, y_test) = train_test_split(
+    descSobelX, labels, test_size=0.25, random_state=42)
+
+classifiers = [
+    KNeighborsClassifier(17),
+    DecisionTreeClassifier(),
+    GaussianNB()]
+
+for clf in classifiers:
+    clf.fit(X_train, y_train)
+    name = clf.__class__.__name__
+
+    print("="*30)
+    print(name)
+
+    print('****Results****')
+    train_predictions = clf.predict(X_test)
+    acc = clf.score(X_test, y_test)
+    print("accuracy: {:.2f}%".format(acc * 100))
+
+# In[ ]:
+
+#Avalia o quinto descritor = Sobel Y
+print("sobel dy")
+(X_train, X_test, y_train, y_test) = train_test_split(
+    descSobelY, labels, test_size=0.25, random_state=42)
+
+classifiers = [
+    KNeighborsClassifier(17),
+    DecisionTreeClassifier(),
+    GaussianNB()]
+
+for clf in classifiers:
+    clf.fit(X_train, y_train)
+    name = clf.__class__.__name__
+
+    print("="*30)
+    print(name)
+
+    print('****Results****')
+    train_predictions = clf.predict(X_test)
+    acc = clf.score(X_test, y_test)
+    print("accuracy: {:.2f}%".format(acc * 100))
 
 # In[ ]:
 
@@ -198,21 +252,21 @@ for clf in classifiers:
     descHist, labels, test_size=0.25, random_state=42)
 
 classifiers = [
-    KNeighborsClassifier(17),    
+    KNeighborsClassifier(17),
     DecisionTreeClassifier(),
     GaussianNB()]
 
 for clf in classifiers:
     clf.fit(X_train, y_train)
     name = clf.__class__.__name__
-    
+
     print("="*30)
     print(name)
-    
+
     print('****Results****')
     train_predictions = clf.predict(X_test)
     acc = clf.score(X_test, y_test)
-    print("accuracy: {:.2f}%".format(acc * 100))   
+    print("accuracy: {:.2f}%".format(acc * 100))
 
 # In[ ]:
 
@@ -221,46 +275,46 @@ for clf in classifiers:
     descEdges, labels, test_size=0.25, random_state=42)
 
 classifiers = [
-    KNeighborsClassifier(17),    
+    KNeighborsClassifier(17),
     DecisionTreeClassifier(),
     GaussianNB()]
 
 for clf in classifiers:
     clf.fit(X_train, y_train)
     name = clf.__class__.__name__
-    
+
     print("="*30)
     print(name)
-    
+
     print('****Results****')
     train_predictions = clf.predict(X_test)
     acc = clf.score(X_test, y_test)
-    print("accuracy: {:.2f}%".format(acc * 100)) 
+    print("accuracy: {:.2f}%".format(acc * 100))
 
 # In[ ]:
 
-#Avalia a combinação dos descritores de Canny e Color Histogram
-
-trainAux = np.hstack((descHist, descHist, descEdges))
+#Avalia a combinação de todos os descritores
+print("teste com todos os descritores")
+trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY))
 (X_train, X_test, y_train, y_test) = train_test_split(
     trainAux, labels, test_size=0.25, random_state=42)
 
 classifiers = [
-    KNeighborsClassifier(17),    
+    KNeighborsClassifier(17),
     DecisionTreeClassifier(),
     GaussianNB()]
 
 for clf in classifiers:
     clf.fit(X_train, y_train)
     name = clf.__class__.__name__
-    
+
     print("="*30)
     print(name)
-    
+
     print('****Results****')
     train_predictions = clf.predict(X_test)
     acc = clf.score(X_test, y_test)
-    print("accuracy: {:.2f}%".format(acc * 100))   
+    print("accuracy: {:.2f}%".format(acc * 100))
 
 
 
