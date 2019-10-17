@@ -186,6 +186,12 @@ if carregarDados:
     print(descHist[0].shape)
     descEdges = despickel('descEdgesPickel')
     print(descEdges[0].shape)
+    descHOG = despickel('descHOGsPickel')
+    print(descEdges[0].shape)
+    descSobelX = despickel('descSobelXPickel')
+    print(descEdges[0].shape)
+    descSobelY = despickel('descSobelYPickel')
+    print(descEdges[0].shape)
 else:
     hog = cv2.HOGDescriptor()
     for i, image_file in enumerate(train_images):
@@ -207,15 +213,24 @@ else:
     pickelObject(rawImages,'rawImagesPickel')
     pickelObject(descHist,'descHistPickel')
     pickelObject(descEdges,'descEdgesPickel')
+    pickelObject(descSobelX,'descSobelXPickel')
+    pickelObject(descSobelY,'descSobelYPickel')
+    pickelObject(descHOG,'descHOGsPickel')
 
 # In[ ]:
 # Classificadores Utilizados
 classifiers = [
-    KNeighborsClassifier(17),
-    DecisionTreeClassifier(),
+    KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+metric_params=None, n_jobs=1, n_neighbors=11, p=2,
+weights='uniform'),
+    DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=11,
+max_features=None, max_leaf_nodes=11, min_impurity_split=1e-07,
+min_samples_leaf=11, min_samples_split=17,
+min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+splitter='best'),
     GaussianNB(),
     SVC(gamma='auto'),
-    MLPClassifier(solver='lbfgs', alpha=1e-5,
+    MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
                   hidden_layer_sizes=(5, 2), random_state=1)
 ]
 # In[ ]:
@@ -278,7 +293,7 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 
 show_results(classifiers, X_train, y_train)
 
-# In[]
+# In[ ]:
 
 
 # %%
