@@ -70,7 +70,7 @@ def show_cats_and_dogs(idx):
     plt.show()
 
 
-def image_to_feature_vector(image, size=(32, 32)):
+def image_to_feature_vector(image, size=(64, 32)):
     # resize the image to a fixed size, then flatten the image into
     # a list of raw pixel intensities
     return cv2.resize(image, size).flatten()
@@ -93,6 +93,8 @@ def show_results(classifiers, X_train, y_train):
 
         print("="*30)
         print(name)
+        if name is 'MLPClassifier':
+            print(clf.n_layers_)
 
         print('****Results****')
         train_predictions = clf.predict(X_test)
@@ -229,9 +231,7 @@ min_samples_leaf=11, min_samples_split=17,
 min_weight_fraction_leaf=0.0, presort=False, random_state=None,
 splitter='best'),
     GaussianNB(),
-    SVC(gamma='auto'),
-    MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(5, 2), random_state=1)
+    SVC(gamma='auto')
 ]
 # In[ ]:
 
@@ -293,7 +293,21 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 
 show_results(classifiers, X_train, y_train)
 
-# In[ ]:
+# In[ ]: Teste da MLP
 
+classifiers = [ MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
+                  hidden_layer_sizes=(20, 20, 20, 20, 20, 20, 20,20 ,20,20,20,20), random_state=1),
+                  MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
+                  hidden_layer_sizes=(100, 100, 100), random_state=1),
+                  MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
+                  hidden_layer_sizes=(100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100), random_state=1),
+                  MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
+                  hidden_layer_sizes=(100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100), random_state=1)  ]
+# Avalia o primeiro descritor: as imagens raw
+print('\n\ndescritor imagens raw')
+(X_train, X_test, y_train, y_test) = train_test_split(
+    rawImages, labels, test_size=0.25, random_state=42)
+
+show_results(classifiers, X_train, y_train)
 
 # %%
