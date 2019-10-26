@@ -35,7 +35,7 @@ from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import train_test_split
 import sklearn.metrics
 from sklearn.metrics import classification_report
-from sklearn.model_selection import  cross_val_score
+from sklearn.model_selection import cross_val_score
 
 
 from skimage.feature import greycomatrix, greycoprops
@@ -57,7 +57,8 @@ def prep_data(images):
     for i, image_file in enumerate(images):
         image = read_image(image_file)
         data[i] = image.T
-        if i%250 == 0: print('Processed {} of {}'.format(i, count))
+        if i % 250 == 0:
+            print('Processed {} of {}'.format(i, count))
     return data
 
 
@@ -70,10 +71,11 @@ def show_cats_and_dogs(idx):
     plt.show()
 
 
-def image_to_feature_vector(image, size=(64, 32)):
+def image_to_feature_vector(image, size=(32, 32)):
     # resize the image to a fixed size, then flatten the image into
     # a list of raw pixel intensities
     return cv2.resize(image, size).flatten()
+
 
 def extract_color_histogram(image, bins=(8, 8, 8)):
     # extract a 3D color histogram from the HSV color space using
@@ -86,6 +88,7 @@ def extract_color_histogram(image, bins=(8, 8, 8)):
     # return the flattened histogram as the feature vector
     return hist.flatten()
 
+
 def show_results(classifiers, X_train, y_train):
     for clf in classifiers:
         clf.fit(X_train, y_train)
@@ -93,8 +96,6 @@ def show_results(classifiers, X_train, y_train):
 
         print("="*30)
         print(name)
-        if name is 'MLPClassifier':
-            print(clf.n_layers_)
 
         print('****Results****')
         train_predictions = clf.predict(X_test)
@@ -117,7 +118,7 @@ train_dogs = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR) if 'dog' in i]
 train_cats = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR) if 'cat' in i]
 
 # considera apenas NIM imagens. Para o dataset completo, desconsiderar.
-train_images = train_dogs[:NIM] + train_cats[:NIM]
+train_images = train_dogs + train_cats
 random.shuffle(train_images)
 
 # Leitura das imagens
@@ -198,11 +199,16 @@ else:
     hog = cv2.HOGDescriptor()
     for i, image_file in enumerate(train_images):
         image = read_image(image_file)  # Lê a imagem
-        pixels = image_to_feature_vector(image) # Põe a imagem num vetor de características
-        histogram = extract_color_histogram(image)  # Extrai o histograma da imagem
-        edges = image_to_feature_vector(auto_canny(image))  # Aplica o canny e põe num vetor de características
-        sobeldx = image_to_feature_vector(cv2.Sobel(image, cv2.CV_16S, 1, 0, ksize=3, scale=1, delta=0))
-        sobeldy = image_to_feature_vector(cv2.Sobel(image, cv2.CV_16S, 0, 1, ksize=3, scale=1, delta=0))
+        # Põe a imagem num vetor de características
+        pixels = image_to_feature_vector(image)
+        histogram = extract_color_histogram(
+            image)  # Extrai o histograma da imagem
+        # Aplica o canny e põe num vetor de características
+        edges = image_to_feature_vector(auto_canny(image))
+        sobeldx = image_to_feature_vector(
+            cv2.Sobel(image, cv2.CV_16S, 1, 0, ksize=3, scale=1, delta=0))
+        sobeldy = image_to_feature_vector(
+            cv2.Sobel(image, cv2.CV_16S, 0, 1, ksize=3, scale=1, delta=0))
         hogimage = image_to_feature_vector(hog.compute(image))
 
         rawImages.append(pixels)
@@ -211,27 +217,30 @@ else:
         descSobelX.append(sobeldx)
         descSobelY.append(sobeldy)
         descHOG.append(hogimage)
-        if i%250 == 0: print('Processed {} of {}'.format(i, count))
-    pickelObject(rawImages,'rawImagesPickel')
-    pickelObject(descHist,'descHistPickel')
-    pickelObject(descEdges,'descEdgesPickel')
-    pickelObject(descSobelX,'descSobelXPickel')
-    pickelObject(descSobelY,'descSobelYPickel')
-    pickelObject(descHOG,'descHOGsPickel')
+        if i % 250 == 0:
+            print('Processed {} of {}'.format(i, count))
+    pickelObject(rawImages, 'rawImagesPickel')
+    pickelObject(descHist, 'descHistPickel')
+    pickelObject(descEdges, 'descEdgesPickel')
+    pickelObject(descSobelX, 'descSobelXPickel')
+    pickelObject(descSobelY, 'descSobelYPickel')
+    pickelObject(descHOG, 'descHOGsPickel')
 
 # In[ ]:
 # Classificadores Utilizados
 classifiers = [
     KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
-metric_params=None, n_jobs=1, n_neighbors=11, p=2,
-weights='uniform'),
+                         metric_params=None, n_jobs=1, n_neighbors=11, p=2,
+                         weights='uniform'),
     DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=11,
-max_features=None, max_leaf_nodes=11, min_impurity_split=1e-07,
-min_samples_leaf=11, min_samples_split=17,
-min_weight_fraction_leaf=0.0, presort=False, random_state=None,
-splitter='best'),
+                           max_features=None, max_leaf_nodes=11, min_impurity_split=1e-07,
+                           min_samples_leaf=11, min_samples_split=17,
+                           min_weight_fraction_leaf=0.0, presort=False, random_state=None,
+                           splitter='best'),
     GaussianNB(),
-    SVC(gamma='auto')
+    SVC(gamma='auto'),
+    MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
+                  hidden_layer_sizes=(5, 2), random_state=1)
 ]
 # In[ ]:
 
@@ -244,7 +253,7 @@ show_results(classifiers, X_train, y_train)
 
 # In[ ]:
 
-#Avalia o quarto descritor = Sobel X
+# Avalia o quarto descritor = Sobel X
 print("\n\nsobel dx")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelX, labels, test_size=0.25, random_state=42)
@@ -253,7 +262,7 @@ show_results(classifiers, X_train, y_train)
 
 # In[ ]:
 
-#Avalia o quinto descritor = Sobel Y
+# Avalia o quinto descritor = Sobel Y
 print("\n\nsobel dy")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelY, labels, test_size=0.25, random_state=42)
@@ -285,7 +294,7 @@ show_results(classifiers, X_train, y_train)
 
 # In[ ]:
 
-#Avalia a combinação de todos os descritores
+# Avalia a combinação de todos os descritores
 print("\n\nteste com todos os descritores")
 trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 (X_train, X_test, y_train, y_test) = train_test_split(
@@ -293,21 +302,7 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 
 show_results(classifiers, X_train, y_train)
 
-# In[ ]: Teste da MLP
+# In[ ]:
 
-classifiers = [ MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(20, 20, 20, 20, 20, 20, 20,20 ,20,20,20,20), random_state=1),
-                  MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(100, 100, 100), random_state=1),
-                  MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100), random_state=1),
-                  MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100,100, 100, 100), random_state=1)  ]
-# Avalia o primeiro descritor: as imagens raw
-print('\n\ndescritor imagens raw')
-(X_train, X_test, y_train, y_test) = train_test_split(
-    rawImages, labels, test_size=0.25, random_state=42)
-
-show_results(classifiers, X_train, y_train)
 
 # %%
