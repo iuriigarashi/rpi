@@ -1,0 +1,205 @@
+
+teste com todos os descritores
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 50.27%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 62.53%
+==============================
+GaussianNB
+****Results****
+accuracy: 64.40%
+==============================
+SVC
+****Results****
+accuracy: 49.63%
+==============================
+MLPClassifier
+****Results****
+accuracy: 49.62%
+
+
+
+
+# In[ ]:...
+
+
+hog
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 60.30%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 60.56%
+==============================
+GaussianNB
+****Results****
+accuracy: 64.54%
+==============================
+SVC
+****Results****
+accuracy: 63.70%
+==============================
+MLPClassifier
+****Results****
+accuracy: 49.62%
+
+
+
+
+# In[ ]:...
+
+
+canny
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 58.96%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 56.66%
+==============================
+GaussianNB
+****Results****
+accuracy: 58.14%
+==============================
+SVC
+****Results****
+accuracy: 49.63%
+==============================
+MLPClassifier
+****Results****
+accuracy: 49.62%
+
+
+
+
+# In[ ]:...
+
+
+histograma de cor
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 60.22%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 62.19%
+==============================
+GaussianNB
+****Results****
+accuracy: 56.93%
+==============================
+SVC
+****Results****
+accuracy: 60.37%
+==============================
+MLPClassifier
+****Results****
+accuracy: 63.04%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/neural_network/multilayer_perceptron.py:566: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+  % self.max_iter, ConvergenceWarning)
+
+
+
+  sobel dy
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 51.52%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 57.55%
+==============================
+GaussianNB
+****Results****
+accuracy: 59.18%
+==============================
+SVC
+****Results****
+accuracy: 49.63%
+==============================
+MLPClassifier
+****Results****
+accuracy: 53.14%
+
+
+
+
+
+# In[ ]:...
+
+
+sobel dx
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 50.03%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 55.95%
+==============================
+GaussianNB
+****Results****
+accuracy: 60.40%
+==============================
+SVC
+****Results****
+accuracy: 49.63%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/neural_network/multilayer_perceptron.py:566: ConvergenceWarning: Stochastic Optimizer: Maximum iterations (200) reached and the optimization hasn't converged yet.
+  % self.max_iter, ConvergenceWarning)
+==============================
+MLPClassifier
+****Results****
+accuracy: 52.29%
+
+
+
+
+# In[ ]:...
+
+
+descritor imagens raw
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 59.22%
+/opt/anaconda/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 58.48%
+==============================
+GaussianNB
+****Results****
+accuracy: 58.32%
+==============================
+SVC
+****Results****
+accuracy: 49.63%
+==============================
+MLPClassifier
+****Results****
+accuracy: 52.77%
