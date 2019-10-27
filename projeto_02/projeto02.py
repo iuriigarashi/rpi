@@ -91,8 +91,10 @@ def extract_color_histogram(image, bins=(8, 8, 8)):
 
 def show_results(classifiers, X_train, y_train):
     for clf in classifiers:
-        clf.fit(X_train, y_train)
         name = clf.__class__.__name__
+        
+        clf.fit(X_train, y_train)
+        
 
         print("="*30)
         print(name)
@@ -118,7 +120,7 @@ train_dogs = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR) if 'dog' in i]
 train_cats = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR) if 'cat' in i]
 
 # considera apenas NIM imagens. Para o dataset completo, desconsiderar.
-train_images = train_dogs + train_cats
+train_images = train_dogs[:NIM] + train_cats[:NIM]
 random.shuffle(train_images)
 
 # Leitura das imagens
@@ -240,8 +242,21 @@ classifiers = [
     GaussianNB(),
     SVC(gamma='auto'),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(5, 2), random_state=1)
+                  hidden_layer_sizes=(20,20,20,20,20), random_state=1)
 ]
+from sklearn.ensemble import  VotingClassifier
+
+def listsClass(clf):
+    return (clf.__class__.__name__, clf)
+
+def criarListaTuplas(lista):
+    listaNova = []
+    for l in lista:
+        listaNova.append(listsClass(l))
+    return listaNova
+
+votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
+classifiers.append(votingClass)
 # In[ ]:
 
 # Avalia o primeiro descritor: as imagens raw
@@ -250,6 +265,7 @@ print('\n\ndescritor imagens raw')
     rawImages, labels, test_size=0.25, random_state=42)
 
 show_results(classifiers, X_train, y_train)
+#show_results([votingClass], X_train, y_train)
 
 # In[ ]:
 
