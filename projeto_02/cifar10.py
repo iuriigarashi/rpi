@@ -96,10 +96,11 @@ def show_results(classifiers, X_train, y_train):
 
 TRAIN_DIR = 'kaggle/train/'
 
+
 ROWS = 128
 COLS = 128
 CHANNELS = 3
-NIM = 1000
+NIM = 2000
 
 # full dataset
 train_images = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR)]
@@ -107,7 +108,7 @@ train_images = train_images[:NIM]
 
 
 # considera apenas NIM imagens. Para o dataset completo, desconsiderar.
-random.shuffle(train_images)
+#random.shuffle(train_images)
 
 # Leitura das imagens
 train = prep_data(train_images)
@@ -115,7 +116,7 @@ print("Train shape: {}".format(train.shape))
 
 # Cria os labels (rótulos)
 train_labels = pd.read_csv('trainLabels.csv')
-train_labels = train_labels[:NIM]
+3train_labels = train_labels[:NIM]
 
 
 le = preprocessing.LabelEncoder()
@@ -211,18 +212,18 @@ else:
     pickelObject(descHOG, 'descHOGsPickel')
 
 classifiers = [
-    KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
-                         metric_params=None, n_jobs=1, n_neighbors=11, p=2,
-                         weights='uniform'),
+    #KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+    #                     metric_params=None, n_jobs=1, n_neighbors=11, p=2,
+    #                     weights='uniform'),
     # DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=11,
     #                        max_features=None, max_leaf_nodes=11, min_impurity_split=1e-07,
     #                        min_samples_leaf=11, min_samples_split=17,
     #                        min_weight_fraction_leaf=0.0, presort=False, random_state=None,
     #                        splitter='best'),
-    # GaussianNB(),
+     GaussianNB(),
     # SVC(gamma='auto'),
-    # MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-    #               hidden_layer_sizes=(20,20,20,20,20), random_state=1)
+     MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
+                   hidden_layer_sizes=np.full(100,20), random_state=1)
 ]
 
 # In[ ]:
@@ -231,13 +232,15 @@ classifiers = [
 print('\n\ndescritor imagens raw')
 (X_train, X_test, y_train, y_test) = train_test_split(
     rawImages, labels_encoded, test_size=0.25, random_state=42)
-
+'''
 clf =  KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
                          metric_params=None, n_jobs=1, n_neighbors=11, p=2,
                          weights='uniform')
 
 clf.fit(X_train, y_train)
-# show_results(classifiers, X_train, y_train)
+'''
+
+show_results(classifiers, X_train, y_train)
 #show_results([votingClass], X_train, y_train)
 
 # In[ ]:
