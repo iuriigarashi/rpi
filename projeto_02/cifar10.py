@@ -116,7 +116,7 @@ print("Train shape: {}".format(train.shape))
 
 # Cria os labels (rótulos)
 train_labels = pd.read_csv('trainLabels.csv')
-3train_labels = train_labels[:NIM]
+train_labels = train_labels[:NIM]
 
 
 le = preprocessing.LabelEncoder()
@@ -211,6 +211,15 @@ else:
     pickelObject(descSobelY, 'descSobelYPickel')
     pickelObject(descHOG, 'descHOGsPickel')
 
+def listsClass(clf):
+    return (clf.__class__.__name__, clf)
+
+def criarListaTuplas(lista):
+    listaNova = []
+    for l in lista:
+        listaNova.append(listsClass(l))
+    return listaNova
+
 classifiers = [
     #KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
     #                     metric_params=None, n_jobs=1, n_neighbors=11, p=2,
@@ -225,6 +234,9 @@ classifiers = [
      MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
                    hidden_layer_sizes=np.full(100,20), random_state=1)
 ]
+from sklearn.ensemble import  VotingClassifier
+votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
+classifiers.append(votingClass)
 
 # In[ ]:
 
