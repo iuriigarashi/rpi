@@ -4,6 +4,7 @@
 # In[1]:
 
 # importa os pacotes necessários
+from sklearn.ensemble import VotingClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from skimage.feature import hog
@@ -89,12 +90,10 @@ def extract_color_histogram(image, bins=(8, 8, 8)):
     return hist.flatten()
 
 
-from sklearn.metrics import classification_report
 def show_results(classifiers, X_train, y_train):
     for clf in classifiers:
         name = clf.__class__.__name__
         clf.fit(X_train, y_train)
-        
 
         print("="*30)
         print(name)
@@ -102,25 +101,19 @@ def show_results(classifiers, X_train, y_train):
         print('****Results****')
         train_predictions = clf.predict(X_test)
         listaNumClass = transformaVetorPredictToClass(train_predictions)
-        listaNumClassTeste =transformaVetorPredictToClass(y_test)
+        listaNumClassTeste = transformaVetorPredictToClass(y_test)
         print(classification_report(listaNumClassTeste, listaNumClass))
         #acc = clf.score(X_test, y_test.round())
         #print("accuracy: {:.2f}%".format(acc * 100))
 
 
-
-
-
-
-
 # In[3]:
-
-TRAIN_DIR = 'kaggle/train/'
+TRAIN_DIR = './projeto_02/kaggle/train/'
 
 ROWS = 128
 COLS = 128
 CHANNELS = 3
-NIM = 1000
+NIM = 5000
 
 # full dataset: dogs and cats
 train_images = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR)]
@@ -139,9 +132,9 @@ print("Train shape: {}".format(train.shape))
 labels = []
 for i in train_images:
     if 'dog' in i:
-        labels.append((0,1))
+        labels.append(1)
     else:
-        labels.append((1,0))
+        labels.append(0)
 
 '''
 if 'dog' in i:
@@ -262,12 +255,13 @@ classifiers = [
     GaussianNB(),
     SVC(gamma='auto'),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(20,20,20,20,20), random_state=1)
+                  hidden_layer_sizes=(20, 20, 20, 20, 20), random_state=1)
 ]
-from sklearn.ensemble import  VotingClassifier
+
 
 def listsClass(clf):
     return (clf.__class__.__name__, clf)
+
 
 def criarListaTuplas(lista):
     listaNova = []
@@ -275,19 +269,24 @@ def criarListaTuplas(lista):
         listaNova.append(listsClass(l))
     return listaNova
 
-votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
+
+votingClass = VotingClassifier(
+    estimators=criarListaTuplas(classifiers), voting="hard")
 classifiers.append(votingClass)
 # In[ ]:
 
 # Recebe um vetor [(0,1)] e resposnde o numero correspondente da classe
+
+
 def transformaVetorPredictToClass(vetor):
     v = []
     for i in vetor:
-        if isinstance(i,np.ndarray):
+        if isinstance(i, np.ndarray):
             i = i.tolist()
         index = i.index(1)
         v.append(index)
     return v
+
 
 # Avalia o primeiro descritor: as imagens raw
 print('\n\ndescritor imagens raw')

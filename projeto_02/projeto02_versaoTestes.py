@@ -107,7 +107,7 @@ def show_results(classifiers, X_train, y_train):
 
 # In[3]:
 
-TRAIN_DIR = 'kaggle/train/'
+TRAIN_DIR = 'projeto_02/kaggle/train/'
 
 
 CHANNELS = 3
@@ -230,6 +230,9 @@ else:
     pickelObject(descSobelY, 'descSobelYPickel')
     pickelObject(descHOG, 'descHOGsPickel')
 
+
+
+
 # In[ ]:
 # Classificadores Utilizados
 classifiers = [
@@ -261,10 +264,11 @@ classifiers.append(votingClass)
 
 
 # In[ ]:
-
+from sklearn.preprocessing import normalize 
 # Avalia o primeiro descritor: as imagens raw
 print ("Tamanho da imagens:  ", TAMANHO_X , '  ', TAMANHO_Y)
 print('\n\ndescritor imagens raw')
+#normalize(rawImages)
 (X_train, X_test, y_train, y_test) = train_test_split(
     rawImages, labels, test_size=0.25, random_state=42)
 
@@ -272,7 +276,7 @@ show_results(classifiers, X_train, y_train)
 #show_results([votingClass], X_train, y_train)
 
 
-
+# In[]
 # Avalia o quarto descritor = Sobel X
 print("\n\nsobel dx")
 (X_train, X_test, y_train, y_test) = train_test_split(
@@ -283,7 +287,7 @@ show_results(classifiers, X_train, y_train)
 
 
 # Avalia o quinto descritor = Sobel Y
-print("\n\nsobel dy")
+print("\n\nsobel dy")   
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelY, labels, test_size=0.25, random_state=42)
 

@@ -1,0 +1,71 @@
+Tamanho da imagens:   48    48
+
+com normalizacao
+
+descritor imagens raw
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 57.20%
+/home/gbossoni/.local/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 54.80%
+==============================
+GaussianNB
+****Results****
+accuracy: 61.20%
+==============================
+SVC
+****Results****
+accuracy: 49.80%
+==============================
+MLPClassifier
+****Results****
+accuracy: 53.00%
+/home/gbossoni/.local/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+VotingClassifier
+****Results****
+accuracy: 58.40%
+
+sem normalizacao
+
+
+
+# In[ ]:...
+Tamanho da imagens:   48    48
+
+
+descritor imagens raw
+==============================
+KNeighborsClassifier
+****Results****
+accuracy: 55.40%
+/home/gbossoni/.local/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+DecisionTreeClassifier
+****Results****
+accuracy: 58.80%
+==============================
+GaussianNB
+****Results****
+accuracy: 56.80%
+==============================
+SVC
+****Results****
+accuracy: 47.40%
+==============================
+MLPClassifier
+****Results****
+accuracy: 59.60%
+/home/gbossoni/.local/lib/python3.7/site-packages/sklearn/tree/tree.py:297: DeprecationWarning: The min_impurity_split parameter is deprecated. Its default value will change from 1e-7 to 0 in version 0.23, and it will be removed in 0.25. Use the min_impurity_decrease parameter instead.
+  DeprecationWarning)
+==============================
+VotingClassifier
+****Results****
+accuracy: 58.80%
