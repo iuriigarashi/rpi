@@ -103,6 +103,7 @@ def show_results(classifiers, X_train, y_train):
         train_predictions = clf.predict(X_test)
         acc = clf.score(X_test, y_test)
         print("accuracy: {:.2f}%".format(acc * 100))
+        adicionarResultado(acc,name,"normal")
 
 
 # In[3]:
@@ -170,6 +171,16 @@ count = len(train_images)
 # carrega os dados anteriores?
 
 
+tabelaResultado = []
+
+def adicionarResultado(score,nomeClass,desc):
+    tabelaResultado.append([score,nomeClass,desc])
+
+def salvarResultado(nomearquivo):
+    df = pd.DataFrame(tabelaResultado, columns=["score","nome","desc"])
+    df.to_csv(nomearquivo)
+
+
 def pickelObject(objeto, arquivo):
     file = open(arquivo, 'wb')
     pickle.dump(objeto, file)
@@ -235,6 +246,7 @@ else:
 
 # In[ ]:
 # Classificadores Utilizados
+
 classifiers = [
     KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
                          metric_params=None, n_jobs=1, n_neighbors=11, p=2,
@@ -247,7 +259,7 @@ classifiers = [
     GaussianNB(),
     SVC(gamma='auto'),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20,20), random_state=1)
+                  hidden_layer_sizes=(50,50,50,50,50,50,50,50,50), random_state=1)
 ]
 def listsClass(clf):
     return (clf.__class__.__name__, clf)
@@ -325,6 +337,6 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 show_results(classifiers, X_train, y_train)
 
 # In[ ]:
-
+salvarResultado('teste1.csv')
 
 # %%
