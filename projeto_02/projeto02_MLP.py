@@ -89,7 +89,7 @@ def extract_color_histogram(image, bins=(8, 8, 8)):
     return hist.flatten()
 
 
-def show_results(classifiers, X_train, y_train):
+def show_results(classifiers, X_train, y_train, descritor):
     for clf in classifiers:
         name = clf.__class__.__name__
         
@@ -103,12 +103,12 @@ def show_results(classifiers, X_train, y_train):
         train_predictions = clf.predict(X_test)
         acc = clf.score(X_test, y_test)
         print("accuracy: {:.2f}%".format(acc * 100))
-        adicionarResultado(acc,name,"normal")
+        adicionarResultado(acc,name,clf,descritor)
 
 
 # In[3]:
 
-TRAIN_DIR = 'projeto_02/kaggle/train/'
+TRAIN_DIR = 'kaggle/train/'
 
 
 CHANNELS = 3
@@ -173,11 +173,11 @@ count = len(train_images)
 
 tabelaResultado = []
 
-def adicionarResultado(score,nomeClass,desc):
-    tabelaResultado.append([score,nomeClass,desc])
+def adicionarResultado(score,nomeClass,desc,descritor):
+    tabelaResultado.append([score,nomeClass,desc,descritor])
 
 def salvarResultado(nomearquivo):
-    df = pd.DataFrame(tabelaResultado, columns=["score","nome","desc"])
+    df = pd.DataFrame(tabelaResultado, columns=["score","nome","desc","descritor"])
     df.to_csv(nomearquivo)
 
 
@@ -248,19 +248,18 @@ else:
 # Classificadores Utilizados
 
 classifiers = [
-    KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
-                         metric_params=None, n_jobs=1, n_neighbors=11, p=2,
-                         weights='uniform'),
-    DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=11,
-                           max_features=None, max_leaf_nodes=11, min_impurity_split=1e-07,
-                           min_samples_leaf=11, min_samples_split=17,
-                           min_weight_fraction_leaf=0.0, presort=False, random_state=None,
-                           splitter='best'),
-    GaussianNB(),
-    SVC(gamma='auto'),
-    MLPClassifier(activation='relu', solver='adam', alpha=1e-5,
-                  hidden_layer_sizes=(50,50,50,50,50,50,50,50,50), random_state=1)
+    MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=(50,50,50,50,50)),
+                  MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=(50,50,50,50,50)),
+        
+    MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20)),
+                  MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20))                  
 ]
+# func logistic nao apreceu boa e a tanh tbm nao
+# tahn nao foi muito boa tbm
 def listsClass(clf):
     return (clf.__class__.__name__, clf)
 
@@ -270,8 +269,8 @@ def criarListaTuplas(lista):
         listaNova.append(listsClass(l))
     return listaNova
 from sklearn.ensemble import  VotingClassifier
-votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
-classifiers.append(votingClass)
+#votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
+#classifiers.append(votingClass)
 
 
 
@@ -284,12 +283,14 @@ print('\n\ndescritor imagens raw')
 (X_train, X_test, y_train, y_test) = train_test_split(
     rawImages, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
+show_results(classifiers, X_train, y_train,'RAW')
 #show_results([votingClass], X_train, y_train)
 
 
 # In[]
 # Avalia o quarto descritor = Sobel X
+'''
+
 print("\n\nsobel dx")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelX, labels, test_size=0.25, random_state=42)
@@ -304,27 +305,27 @@ print("\n\nsobel dy")
     descSobelY, labels, test_size=0.25, random_state=42)
 
 show_results(classifiers, X_train, y_train)
-
+'''
 
 # Avalia o segundo descritor: color histogram
 print('\n\nhistograma de cor')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descHist, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
+show_results(classifiers, X_train, y_train,'Histograma')
 
 
 print('\n\ncanny')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descEdges, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
+show_results(classifiers, X_train, y_train,'canny')
 
 print('\n\nhog')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descHOG, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
+show_results(classifiers, X_train, y_train,'hog')
 
 
 
@@ -334,9 +335,9 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 (X_train, X_test, y_train, y_test) = train_test_split(
     trainAux, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
+show_results(classifiers, X_train, y_train,'allInOne')
 
 # In[ ]:
-salvarResultado('testeImg32-2k.csv')
+salvarResultado('testeImg32-MLP-testecamadas-20x10-50x5.csv')
 
 # %%
