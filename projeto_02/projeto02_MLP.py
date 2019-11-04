@@ -112,7 +112,7 @@ TRAIN_DIR = 'kaggle/train/'
 
 
 CHANNELS = 3
-NIM = 2000
+NIM = 5000
 TAMANHO_X = 24
 TAMANHO_Y = 24
 ROWS = 128
@@ -338,6 +338,6 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 show_results(classifiers, X_train, y_train,'allInOne')
 
 # In[ ]:
-salvarResultado('testeImg32-MLP-testecamadas-imagens2424.csv')
+salvarResultado('testeImg32-MLP-testecamadas-imagens2424-5k.csv')
 
 # %%
