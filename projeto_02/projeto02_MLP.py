@@ -113,8 +113,8 @@ TRAIN_DIR = 'kaggle/train/'
 
 CHANNELS = 3
 NIM = 2000
-TAMANHO_X = 32
-TAMANHO_Y = 32
+TAMANHO_X = 24
+TAMANHO_Y = 24
 ROWS = 128
 COLS = 128
 # full dataset: dogs and cats
@@ -338,6 +338,6 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 show_results(classifiers, X_train, y_train,'allInOne')
 
 # In[ ]:
-salvarResultado('testeImg32-MLP-testecamadas-20x10-50x5.csv')
+salvarResultado('testeImg32-MLP-testecamadas-imagens2424.csv')
 
 # %%
