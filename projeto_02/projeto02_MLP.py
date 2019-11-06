@@ -112,7 +112,7 @@ TRAIN_DIR = 'kaggle/train/'
 
 
 CHANNELS = 3
-NIM = 5000
+NIM = 2500
 TAMANHO_X = 24
 TAMANHO_Y = 24
 ROWS = 128
@@ -162,6 +162,7 @@ descHist = []
 descEdges = []
 descSobelX = []
 descSobelY = []
+descSobelXY = []
 descOrientation = []
 descHOG = []
 
@@ -224,6 +225,8 @@ else:
             cv2.Sobel(image, cv2.CV_16S, 1, 0, ksize=3, scale=1, delta=0),size=(TAMANHO_X,TAMANHO_Y))
         sobeldy = image_to_feature_vector(
             cv2.Sobel(image, cv2.CV_16S, 0, 1, ksize=3, scale=1, delta=0),size=(TAMANHO_X,TAMANHO_Y))
+        sobeldXY = image_to_feature_vector(
+            cv2.Sobel(image, cv2.CV_16S, 1, 1, ksize=3, scale=1, delta=0),size=(TAMANHO_X,TAMANHO_Y))
         hogimage = image_to_feature_vector(hog.compute(image),size=(TAMANHO_X,TAMANHO_Y))
 
         rawImages.append(pixels)
@@ -231,6 +234,7 @@ else:
         descEdges.append(edges)
         descSobelX.append(sobeldx)
         descSobelY.append(sobeldy)
+        descSobelXY.append(sobeldXY)
         descHOG.append(hogimage)
         if i % 250 == 0:
             print('Processed {} of {}'.format(i, count))
@@ -247,16 +251,16 @@ else:
 # In[ ]:
 # Classificadores Utilizados
 
+
 classifiers = [
     MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(50,50,50,50,50)),
+                  hidden_layer_sizes=np.full(20,20),max_iter=1000),
                   MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(50,50,50,50,50)),
-        
-    MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20)),
-                  MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20))                  
+                  hidden_layer_sizes=np.full(20,20),max_iter=1000),
+    MLPClassifier(activation='logistic', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=np.full(20,20),max_iter=1000),
+                  MLPClassifier(activation='tanh', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=np.full(20,20),max_iter=1000)                  
 ]
 # func logistic nao apreceu boa e a tanh tbm nao
 # tahn nao foi muito boa tbm
@@ -289,13 +293,13 @@ show_results(classifiers, X_train, y_train,'RAW')
 
 # In[]
 # Avalia o quarto descritor = Sobel X
-'''
+
 
 print("\n\nsobel dx")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelX, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
+show_results(classifiers, X_train, y_train,'Sobel X')
 
 
 
@@ -304,8 +308,17 @@ print("\n\nsobel dy")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelY, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train)
-'''
+show_results(classifiers, X_train, y_train,'Sobel Y')
+
+# sobel XY?
+
+
+(X_train, X_test, y_train, y_test) = train_test_split(
+    descSobelXY, labels, test_size=0.25, random_state=42)
+
+show_results(classifiers, X_train, y_train,'Sobel XY')
+
+
 
 # Avalia o segundo descritor: color histogram
 print('\n\nhistograma de cor')
@@ -338,6 +351,6 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 show_results(classifiers, X_train, y_train,'allInOne')
 
 # In[ ]:
-salvarResultado('testeImg32-MLP-testecamadas-imagens2424-5k.csv')
+salvarResultado('testeImg32-testeFuncAtiv-5k.csv')
 
 # %%

@@ -112,7 +112,7 @@ NIM = 25000
 
 # full dataset
 train_images = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR)]
-train_images = train_images[:NIM]
+]train_images = train_images[:NIM]
 
 
 # considera apenas NIM imagens. Para o dataset completo, desconsiderar.
