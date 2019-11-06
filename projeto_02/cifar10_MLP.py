@@ -108,7 +108,7 @@ TRAIN_DIR = 'kaggle/train/'
 ROWS = 128
 COLS = 128
 CHANNELS = 3
-NIM = 20000
+NIM = 25000
 
 # full dataset
 train_images = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR)]
@@ -230,16 +230,14 @@ def criarListaTuplas(lista):
 
 classifiers = [
     
-     GaussianNB(),
      MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(50,50,50,50,50),max_iter=1000),
-                  MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(50,50,50,50,50),max_iter=1000),
-        
+                  hidden_layer_sizes=np.full(50,50),max_iter=1000),
+    MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=np.full(50,100),max_iter=1000),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20),max_iter=1000),
+                  hidden_layer_sizes=np.full(20,50),max_iter=1000),
                   MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=(20,20,20,20,20,20,20,20,20),max_iter=1000) 
+                  hidden_layer_sizes=np.full(20,100),max_iter=1000) 
 ]
 from sklearn.ensemble import  VotingClassifier
 #votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
@@ -315,4 +313,4 @@ show_results(classifiers, X_train, y_train)
 '''
 
 # In[ ]:
-salvarResultado('cipher10Img32-imagens2424-20k.csv')
+salvarResultado('cipher10Img32-imagens2424-all-MLPProfundas.csv')
