@@ -112,7 +112,7 @@ NIM = 25000
 
 # full dataset
 train_images = [TRAIN_DIR+i for i in os.listdir(TRAIN_DIR)]
-]train_images = train_images[:NIM]
+train_images = train_images[:NIM]
 
 
 # considera apenas NIM imagens. Para o dataset completo, desconsiderar.
@@ -229,15 +229,15 @@ def criarListaTuplas(lista):
     return listaNova
 
 classifiers = [
-    
+    GaussianNB(),
      MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(50,50),max_iter=1000),
+                  hidden_layer_sizes=np.full(50,20),max_iter=500),
     MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(50,100),max_iter=1000),
+                  hidden_layer_sizes=np.full(50,20),max_iter=500),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20,50),max_iter=1000),
+                  hidden_layer_sizes=np.full(100,20),max_iter=500),
                   MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20,100),max_iter=1000) 
+                  hidden_layer_sizes=np.full(100,100),max_iter=500) 
 ]
 from sklearn.ensemble import  VotingClassifier
 #votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
@@ -313,4 +313,4 @@ show_results(classifiers, X_train, y_train)
 '''
 
 # In[ ]:
-salvarResultado('cipher10Img32-imagens2424-all-MLPProfundas.csv')
+salvarResultado('cipher1030k-MLPProfundasENaive.csv')
