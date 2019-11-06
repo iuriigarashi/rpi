@@ -221,9 +221,9 @@ def criarListaTuplas(lista):
     return listaNova
 
 classifiers = [
-    #KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
-    #                     metric_params=None, n_jobs=1, n_neighbors=11, p=2,
-    #                     weights='uniform'),
+    KNeighborsClassifier(algorithm='auto', leaf_size=30, metric='minkowski',
+                         metric_params=None, n_jobs=1, n_neighbors=15, p=2,
+                         weights='uniform'),
     # DecisionTreeClassifier(class_weight=None, criterion='entropy', max_depth=11,
     #                        max_features=None, max_leaf_nodes=11, min_impurity_split=1e-07,
     #                        min_samples_leaf=11, min_samples_split=17,
@@ -237,6 +237,13 @@ classifiers = [
 from sklearn.ensemble import  VotingClassifier
 votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
 classifiers.append(votingClass)
+
+# In[ ]:
+print("\n\nsobel dy e sobel dx")
+trainAux = np.hstack((descSobelX, descSobelY))
+(X_train, X_test, y_train, y_test) = train_test_split(
+    trainAux, labels_encoded, test_size=0.25, random_state=42)
+show_results(classifiers, X_train, y_train)
 
 # In[ ]:
 
@@ -296,7 +303,14 @@ print('\n\nhog')
 
 show_results(classifiers, X_train, y_train)
 
-# In[ ]:
+#In[ ]
+print('\n\nhog')
+(X_train, X_test, y_train, y_test) = train_test_split(
+    descHOG, labels_encoded, test_size=0.25, random_state=42)
+
+show_results(classifiers, X_train, y_train)
+
+
 
 # Avalia a combinação de todos os descritores
 print("\n\nteste com todos os descritores")
