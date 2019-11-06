@@ -113,7 +113,7 @@ TRAIN_DIR = 'kaggle/train/'
 
 
 CHANNELS = 3
-NIM = 2500
+NIM = 7500
 TAMANHO_X = 24
 TAMANHO_Y = 24
 ROWS = 128
@@ -257,14 +257,15 @@ else:
 
 
 classifiers = [
+    GaussianNB(),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20, 50), max_iter=1000),
+                  hidden_layer_sizes=np.full(20, 50), max_iter=500),
     MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20, 50), max_iter=1000),
+                  hidden_layer_sizes=np.full(20, 50), max_iter=500),
     MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20, 20), max_iter=1000),
+                  hidden_layer_sizes=np.full(20, 20), max_iter=500),
     MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20, 20), max_iter=1000)
+                  hidden_layer_sizes=np.full(20, 20), max_iter=500)
 ]
 # func logistic nao apreceu boa e a tanh tbm nao
 # tahn nao foi muito boa tbm
@@ -354,6 +355,6 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 show_results(classifiers, X_train, y_train, 'allInOne')
 
 # In[ ]:
-salvarResultado('testecamadas-5k.csv')
+salvarResultado('testecamadas-all-naive.csv')
 
 # %%
