@@ -4,6 +4,8 @@
 # In[1]:
 
 # importa os pacotes necessários
+from sklearn.ensemble import VotingClassifier
+from sklearn.preprocessing import normalize
 from sklearn.neural_network import MLPClassifier
 from sklearn.svm import SVC
 from skimage.feature import hog
@@ -92,9 +94,8 @@ def extract_color_histogram(image, bins=(8, 8, 8)):
 def show_results(classifiers, X_train, y_train, descritor):
     for clf in classifiers:
         name = clf.__class__.__name__
-        
+
         clf.fit(X_train, y_train)
-        
 
         print("="*30)
         print(name)
@@ -103,7 +104,7 @@ def show_results(classifiers, X_train, y_train, descritor):
         train_predictions = clf.predict(X_test)
         acc = clf.score(X_test, y_test)
         print("accuracy: {:.2f}%".format(acc * 100))
-        adicionarResultado(acc,name,clf,descritor)
+        adicionarResultado(acc, name, clf, descritor)
 
 
 # In[3]:
@@ -174,11 +175,14 @@ count = len(train_images)
 
 tabelaResultado = []
 
-def adicionarResultado(score,nomeClass,desc,descritor):
-    tabelaResultado.append([score,nomeClass,desc,descritor])
+
+def adicionarResultado(score, nomeClass, desc, descritor):
+    tabelaResultado.append([score, nomeClass,  descritor, desc])
+
 
 def salvarResultado(nomearquivo):
-    df = pd.DataFrame(tabelaResultado, columns=["score","nome","desc","descritor"])
+    df = pd.DataFrame(tabelaResultado, columns=[
+                      "score", "nome",  "descritor", "desc"])
     df.to_csv(nomearquivo)
 
 
@@ -220,14 +224,16 @@ else:
         histogram = extract_color_histogram(
             image)  # Extrai o histograma da imagem
         # Aplica o canny e põe num vetor de características
-        edges = image_to_feature_vector(auto_canny(image),size=(TAMANHO_X,TAMANHO_Y))
+        edges = image_to_feature_vector(
+            auto_canny(image), size=(TAMANHO_X, TAMANHO_Y))
         sobeldx = image_to_feature_vector(
-            cv2.Sobel(image, cv2.CV_16S, 1, 0, ksize=3, scale=1, delta=0),size=(TAMANHO_X,TAMANHO_Y))
+            cv2.Sobel(image, cv2.CV_16S, 1, 0, ksize=3, scale=1, delta=0), size=(TAMANHO_X, TAMANHO_Y))
         sobeldy = image_to_feature_vector(
-            cv2.Sobel(image, cv2.CV_16S, 0, 1, ksize=3, scale=1, delta=0),size=(TAMANHO_X,TAMANHO_Y))
+            cv2.Sobel(image, cv2.CV_16S, 0, 1, ksize=3, scale=1, delta=0), size=(TAMANHO_X, TAMANHO_Y))
         sobeldXY = image_to_feature_vector(
-            cv2.Sobel(image, cv2.CV_16S, 1, 1, ksize=3, scale=1, delta=0),size=(TAMANHO_X,TAMANHO_Y))
-        hogimage = image_to_feature_vector(hog.compute(image),size=(TAMANHO_X,TAMANHO_Y))
+            cv2.Sobel(image, cv2.CV_16S, 1, 1, ksize=3, scale=1, delta=0), size=(TAMANHO_X, TAMANHO_Y))
+        hogimage = image_to_feature_vector(
+            hog.compute(image), size=(TAMANHO_X, TAMANHO_Y))
 
         rawImages.append(pixels)
         descHist.append(histogram)
@@ -246,48 +252,48 @@ else:
     pickelObject(descHOG, 'descHOGsPickel')
 
 
-
-
 # In[ ]:
 # Classificadores Utilizados
 
 
 classifiers = [
     MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20,20),max_iter=1000),
-                  MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20,20),max_iter=1000),
-    MLPClassifier(activation='logistic', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20,20),max_iter=1000),
-                  MLPClassifier(activation='tanh', solver='adam', alpha=1e-4,
-                  hidden_layer_sizes=np.full(20,20),max_iter=1000)                  
+                  hidden_layer_sizes=np.full(20, 50), max_iter=1000),
+    MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=np.full(20, 50), max_iter=1000),
+    MLPClassifier(activation='relu', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=np.full(20, 20), max_iter=1000),
+    MLPClassifier(activation='identity', solver='adam', alpha=1e-4,
+                  hidden_layer_sizes=np.full(20, 20), max_iter=1000)
 ]
 # func logistic nao apreceu boa e a tanh tbm nao
 # tahn nao foi muito boa tbm
+
+
 def listsClass(clf):
     return (clf.__class__.__name__, clf)
+
 
 def criarListaTuplas(lista):
     listaNova = []
     for l in lista:
         listaNova.append(listsClass(l))
     return listaNova
-from sklearn.ensemble import  VotingClassifier
-#votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
-#classifiers.append(votingClass)
 
+
+#votingClass = VotingClassifier(estimators=criarListaTuplas(classifiers),voting="hard")
+# classifiers.append(votingClass)
 
 
 # In[ ]:
-from sklearn.preprocessing import normalize 
 # Avalia o primeiro descritor: as imagens raw
-print ("Tamanho da imagens:  ", TAMANHO_X , '  ', TAMANHO_Y)
+print("Tamanho da imagens:  ", TAMANHO_X, '  ', TAMANHO_Y)
 print('\n\ndescritor imagens raw')
-#normalize(rawImages)
+# normalize(rawImages)
 (X_train, X_test, y_train, y_test) = train_test_split(
     rawImages, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'RAW')
+show_results(classifiers, X_train, y_train, 'RAW')
 #show_results([votingClass], X_train, y_train)
 
 
@@ -299,16 +305,15 @@ print("\n\nsobel dx")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelX, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'Sobel X')
-
+show_results(classifiers, X_train, y_train, 'Sobel X')
 
 
 # Avalia o quinto descritor = Sobel Y
-print("\n\nsobel dy")   
+print("\n\nsobel dy")
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelY, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'Sobel Y')
+show_results(classifiers, X_train, y_train, 'Sobel Y')
 
 # sobel XY?
 
@@ -316,8 +321,7 @@ show_results(classifiers, X_train, y_train,'Sobel Y')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descSobelXY, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'Sobel XY')
-
+show_results(classifiers, X_train, y_train, 'Sobel XY')
 
 
 # Avalia o segundo descritor: color histogram
@@ -325,21 +329,20 @@ print('\n\nhistograma de cor')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descHist, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'Histograma')
+show_results(classifiers, X_train, y_train, 'Histograma')
 
 
 print('\n\ncanny')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descEdges, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'canny')
+show_results(classifiers, X_train, y_train, 'canny')
 
 print('\n\nhog')
 (X_train, X_test, y_train, y_test) = train_test_split(
     descHOG, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'hog')
-
+show_results(classifiers, X_train, y_train, 'hog')
 
 
 # Avalia a combinação de todos os descritores
@@ -348,9 +351,9 @@ trainAux = np.hstack((descHist, descEdges, descSobelX, descSobelY, descHOG))
 (X_train, X_test, y_train, y_test) = train_test_split(
     trainAux, labels, test_size=0.25, random_state=42)
 
-show_results(classifiers, X_train, y_train,'allInOne')
+show_results(classifiers, X_train, y_train, 'allInOne')
 
 # In[ ]:
-salvarResultado('testeImg32-testeFuncAtiv-5k.csv')
+salvarResultado('testecamadas-5k.csv')
 
 # %%
